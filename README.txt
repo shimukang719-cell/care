@@ -1,0 +1,1 @@
+Open both pages from the same local server origin, e.g. python3 -m http.server 8000. Use fictional demo data only. Admin username: admin. Password is configured in HTML for testing only; this is not secure authentication. Do not deploy with real user data.
