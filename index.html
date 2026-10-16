@@ -6,34 +6,6 @@
   <meta name="theme-color" content="#eaf7f0">
   <meta name="description" content="Haya Community Care is an independent community volunteering initiative in Dublin, Ireland.">
   <title>Haya Community Care | Dublin</title>
-/* Registered user */
-.member-counter {
-  max-width: 320px;
-  margin: 30px auto;
-  padding: 25px;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 20px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-}
-
-.member-counter h3 {
-  font-size: 18px;
-  margin-bottom: 12px;
-}
-
-#totalMembers {
-  font-size: 48px;
-  font-weight: 800;
-  color: #16a34a;
-}
-
-.member-counter p {
-  font-size: 13px;
-  margin-top: 10px;
-}
   <style>
     :root {
       --mint: #eaf7f0;
@@ -211,6 +183,12 @@ body>header,body>main,body>footer,body>.haya-promo,body>.skip-link{position:rela
 @keyframes hayaAmbient{from{transform:translate3d(-2%,1%,0) scale(1)}to{transform:translate3d(3%,-2%,0) scale(1.12)}}
 @media(prefers-reduced-motion:reduce){body::before,.haya-promo .promo-slide{animation:none!important}.haya-promo .promo-slide:first-child{opacity:1}}
 
+
+    /* Homepage registration counter (local browser demo only) */
+    .member-counter { display: inline-flex; flex-direction: column; align-items: center; text-align: center; margin-top: 22px; padding: 16px 26px; border-radius: 18px; background: rgba(255,255,255,.72); border: 1px solid rgba(40,107,80,.17); box-shadow: 0 10px 26px rgba(32,79,61,.09); backdrop-filter: blur(12px); }
+    .member-counter h3 { font-size: 16px; margin: 0 0 3px; }
+    .member-counter .member-total { font-size: 40px; line-height: 1.2; font-weight: 800; color: var(--green); }
+    .member-counter p { font-size: 12px; margin: 5px 0 0; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -250,11 +228,6 @@ body>header,body>main,body>footer,body>.haya-promo,body>.skip-link{position:rela
 
   <main id="main">
     <section class="hero" id="home">
-      <div class="member-counter">
-  <h3>Total Registered Members</h3>
-  <div id="totalMembers">0</div>
-  <p>Growing Together, Caring Together.</p>
-</div>
       <div class="hero-inner">
         <div class="eyebrow">Welcome to our community</div>
         <h1>Care, Kindness and Wellbeing for Everyone.</h1>
@@ -264,6 +237,12 @@ body>header,body>main,body>footer,body>.haya-promo,body>.skip-link{position:rela
           <a class="btn secondary" href="#booking">Book Free Session <span aria-hidden="true">→</span></a>
         </div>
         <p class="hero-note">An independent community volunteering initiative · Dublin, Ireland</p>
+        <div class="member-counter" aria-label="Registrations stored in this browser">
+          <h3>Total Registered Members</h3>
+          <div class="member-total" id="totalMembers" aria-live="polite">0</div>
+          <p>Growing Together, Caring Together.</p>
+          <p>Local demo count · This browser only</p>
+        </div>
       </div>
     </section>
 
@@ -450,6 +429,7 @@ body>header,body>main,body>footer,body>.haya-promo,body>.skip-link{position:rela
         date: new Date().toISOString().slice(0,10), status: 'Pending'});
       localStorage.setItem(STORE, JSON.stringify(list));
       document.getElementById('registerMessage').classList.add('show');
+      updateMemberCount();
       event.target.reset();
     });
     document.getElementById('bookingForm').addEventListener('submit', event => {
@@ -473,26 +453,18 @@ body>header,body>main,body>footer,body>.haya-promo,body>.skip-link{position:rela
         event.target.reset();
       } catch (_) { alert('Could not save the demo booking. Use a local server and normal browser window.'); }
     });
+
+    function updateMemberCount() {
+      const target = document.getElementById('totalMembers');
+      if (!target) return;
+      try {
+        const members = JSON.parse(localStorage.getItem('haya_local_registration_demo_v1') || '[]');
+        target.textContent = Array.isArray(members) ? String(members.length) : '0';
+      } catch (_) { target.textContent = '0'; }
+    }
+    updateMemberCount();
+    window.addEventListener('storage', updateMemberCount);
+    window.addEventListener('pageshow', updateMemberCount);
   </script>
 </body>
-  
-<script>
-function updateMemberCount() {
-  try {
-    const members = JSON.parse(
-      localStorage.getItem("haya_local_registration_demo_v1") || "[]"
-    );
-
-    document.getElementById("totalMembers").textContent =
-      Array.isArray(members) ? members.length : 0;
-  } catch (error) {
-    document.getElementById("totalMembers").textContent = "0";
-  }
-}
-
-updateMemberCount();
-
-window.addEventListener("storage", updateMemberCount);
-window.addEventListener("pageshow", updateMemberCount);
-</script>
 </html>
