@@ -6,6 +6,34 @@
   <meta name="theme-color" content="#eaf7f0">
   <meta name="description" content="Haya Community Care is an independent community volunteering initiative in Dublin, Ireland.">
   <title>Haya Community Care | Dublin</title>
+/* Registered user */
+.member-counter {
+  max-width: 320px;
+  margin: 30px auto;
+  padding: 25px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.member-counter h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+#totalMembers {
+  font-size: 48px;
+  font-weight: 800;
+  color: #16a34a;
+}
+
+.member-counter p {
+  font-size: 13px;
+  margin-top: 10px;
+}
   <style>
     :root {
       --mint: #eaf7f0;
@@ -222,6 +250,11 @@ body>header,body>main,body>footer,body>.haya-promo,body>.skip-link{position:rela
 
   <main id="main">
     <section class="hero" id="home">
+      <div class="member-counter">
+  <h3>Total Registered Members</h3>
+  <div id="totalMembers">0</div>
+  <p>Growing Together, Caring Together.</p>
+</div>
       <div class="hero-inner">
         <div class="eyebrow">Welcome to our community</div>
         <h1>Care, Kindness and Wellbeing for Everyone.</h1>
@@ -442,4 +475,24 @@ body>header,body>main,body>footer,body>.haya-promo,body>.skip-link{position:rela
     });
   </script>
 </body>
+  
+<script>
+function updateMemberCount() {
+  try {
+    const members = JSON.parse(
+      localStorage.getItem("haya_local_registration_demo_v1") || "[]"
+    );
+
+    document.getElementById("totalMembers").textContent =
+      Array.isArray(members) ? members.length : 0;
+  } catch (error) {
+    document.getElementById("totalMembers").textContent = "0";
+  }
+}
+
+updateMemberCount();
+
+window.addEventListener("storage", updateMemberCount);
+window.addEventListener("pageshow", updateMemberCount);
+</script>
 </html>
