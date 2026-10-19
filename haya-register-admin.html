@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Haya Community Care | Registration & Admin Demo</title>
+<style>
+:root{--green:#176a42;--dark:#173c2b;--mint:#e8f7ee;--line:#c8e1d1}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--dark);background:linear-gradient(125deg,#f7fff9,#e4f5e9);min-height:100vh}
+header{background:#fffdfdf2;border-bottom:1px solid var(--line);padding:20px max(18px,calc((100vw - 1000px)/2));display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+h1{font-size:clamp(23px,3vw,32px);margin:0}header p{margin:7px 0 0;color:#567363}nav{display:flex;gap:8px;flex-wrap:wrap}button{cursor:pointer;font:inherit;border:0;border-radius:10px;padding:12px 18px;background:var(--green);color:white;font-weight:700}button:hover{background:#0c5030}button.secondary{background:#e4f3e9;color:var(--dark)}button.secondary:hover{background:#cde9d6}button.danger{background:#a53b39}button.small{padding:8px 11px;font-size:14px}main{max-width:1000px;margin:32px auto;padding:0 18px}.card{background:white;border:1px solid var(--line);border-radius:18px;padding:clamp(18px,4vw,32px);box-shadow:0 10px 30px #19482c12;margin-bottom:20px}.hidden{display:none!important}.two{display:grid;grid-template-columns:1fr 1fr;gap:22px}.intro{padding:18px}h2{margin-top:0;font-size:26px}p{line-height:1.6}label{display:block;font-weight:700;margin:16px 0 8px}input,select{width:100%;font:inherit;padding:14px;border:1px solid #a9cdb7;border-radius:10px;background:white;color:#183c2a}input:focus,select:focus{outline:2px solid #69b98c}form button{margin-top:22px;width:100%}.notice{background:#fff3d8;padding:12px 15px;border-radius:10px;margin-top:18px;font-size:14px}.success{background:#e1f7e7}.error{background:#ffe8e8}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:18px 0}.stat{background:var(--mint);border-radius:12px;padding:18px}.stat strong{font-size:30px;display:block}.table-scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:720px}th,td{text-align:left;padding:12px;border-bottom:1px solid #e2ece5;font-size:14px}th{background:#f0f8f3}td select{padding:7px;font-size:14px}.actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:15px}.actions input{max-width:300px}footer{text-align:center;color:#54705d;padding:28px 12px;font-size:14px}@media(max-width:700px){.two{grid-template-columns:1fr}.stats{grid-template-columns:1fr}header{padding:18px}nav button{padding:10px}}
+
+/* Promotional sidebar: shared across both pages */
+@media(min-width:1120px){body{padding-right:315px}.haya-promo{position:fixed;right:0;top:0;bottom:0;width:305px;z-index:1100;overflow-y:auto;box-shadow:-6px 0 25px #173c2b20}}
+.haya-promo{background:#f2faf5;color:#173c2b;border-left:1px solid #c8e1d1;padding:16px;font-family:Arial,Helvetica,sans-serif;box-sizing:border-box}
+.haya-promo *{box-sizing:border-box}.haya-promo h2{font-size:21px;line-height:1.3;margin:4px 0 10px;color:#204f3d}.haya-promo p{font-size:14px;line-height:1.65;margin:10px 0;color:#294e3a}.haya-promo .promo-stage{border-radius:15px;overflow:hidden;background:#d8efe2;position:relative;aspect-ratio:4/3}.haya-promo .promo-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;animation:promoCycle 18s infinite}.haya-promo .promo-slide:nth-child(2){animation-delay:6s}.haya-promo .promo-slide:nth-child(3){animation-delay:12s}.haya-promo .promo-caption{font-weight:750;font-size:15px}.haya-promo .promo-note{border-top:1px solid #c8e1d1;padding-top:9px;font-weight:700}.haya-promo .promo-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3a956b;margin:0 3px}
+@keyframes promoCycle{0%{opacity:0;transform:scale(1.035)}4%,29%{opacity:1;transform:scale(1)}33.333%,100%{opacity:0;transform:scale(1.035)}}
+@media(max-width:1119px){.haya-promo{position:relative;width:100%;max-width:100%;border-left:0;border-bottom:1px solid #c8e1d1;padding:15px 22px}.haya-promo .promo-stage{max-width:450px;aspect-ratio:16/9}.haya-promo p{max-width:800px}}
+/* Subtle animated mint background on all sections and the admin page */
+body{position:relative}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 18% 26%,#b5e6c566 0,transparent 29%),radial-gradient(circle at 77% 75%,#c0ebd066 0,transparent 32%);animation:hayaAmbient 15s ease-in-out infinite alternate}
+body>header,body>main,body>footer,body>.haya-promo,body>.skip-link{position:relative;z-index:1}
+@media(min-width:1120px){body>.haya-promo{position:fixed;z-index:1100}}
+@keyframes hayaAmbient{from{transform:translate3d(-2%,1%,0) scale(1)}to{transform:translate3d(3%,-2%,0) scale(1.12)}}
+@media(prefers-reduced-motion:reduce){body::before,.haya-promo .promo-slide{animation:none!important}.haya-promo .promo-slide:first-child{opacity:1}}
+
+
+/* Elegant shifting pearl / sage / blue background */
+body{background:linear-gradient(125deg,#e5f3eb,#e6eff8,#f3e9f1,#e7f4ec,#edf0fa)!important;background-size:420% 420%!important;animation:luxuryColors 26s ease-in-out infinite!important}
+@keyframes luxuryColors{0%{background-position:0% 50%}25%{background-position:45% 10%}50%{background-position:100% 65%}75%{background-position:40% 100%}100%{background-position:0% 50%}}
+@media(prefers-reduced-motion:reduce){body{animation:none!important}}
+/* Firebase Authentication Google sign-in UI */
+.social-login{margin-top:16px;padding-top:15px;border-top:1px solid #d6e6dd}
+.social-login .social-heading{font-size:13px;font-weight:700;color:#4b6258;text-align:center;margin:0 0 10px}
+.social-buttons{display:grid;grid-template-columns:1fr;gap:9px}
+.social-btn{display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid #c9d9d0;background:#fff;color:#263b30;border-radius:11px;padding:11px 8px;font:600 14px Arial,sans-serif;cursor:pointer}
+.social-btn:hover{background:#eef6f2}.social-btn .google-g{font-weight:900;color:#4285f4;font-size:20px}
+.social-status{font-size:12px;color:#52685c;line-height:1.5;margin:10px 0 0}
+
+
+/* Restore supplied HAYA banner as softly blurred background on registration/admin page */
+body::after{content:"";position:fixed;inset:-22px;z-index:0;pointer-events:none;background:linear-gradient(rgba(248,252,247,.78),rgba(238,249,245,.82)),url("haya-home-background.png") center / cover no-repeat;filter:blur(8px);opacity:.92}
+body::before{z-index:0}
+body>header,body>main,body>footer{position:relative;z-index:2}
+body>.haya-promo{z-index:3}
+@media(min-width:1120px){body>.haya-promo{position:fixed;z-index:1100}}
+.haya-admin-brand{display:flex;align-items:center;gap:13px}
+.haya-admin-brand img{width:56px;height:56px;object-fit:cover;border-radius:12px;box-shadow:0 5px 16px #123b3226;flex:none}
+@media(max-width:700px){.haya-admin-brand img{width:43px;height:43px}}
+
+</style>
+</head>
+<body>
+<aside class="haya-promo" aria-label="Community project introduction">
+<h2>Haya Community Care</h2>
+<div class="promo-stage" aria-label="Automatic slideshow of community care and nature">
+<img class="promo-slide" src="community-care.jpg" alt="A young volunteer speaking with an older adult">
+<img class="promo-slide" src="nature-care.jpg" alt="Wild birds flying at sunset">
+<img class="promo-slide" src="green-earth.png" alt="Illustration of people caring for the planet">
+</div>
+<p class="promo-caption">A mother-and-son founded, nonprofit community volunteer initiative</p>
+<p><strong>100% free.</strong> No fees, no product sales, and no commercial profit.</p>
+<p><strong>Community Wellbeing:</strong> We aim to support older adults living alone, people with disabilities, and low-income residents in Ireland through free muscle-relaxation and fascia-relief activities, where suitable qualifications, training, insurance and safeguards are in place.</p>
+<p><strong>Nature & Wildlife Care:</strong> We care for the local environment, wild birds, and small wild animals.</p>
+<p class="promo-note">Kindness towards people. Compassion for nature. Rooted in Ireland, volunteering for our community.</p>
+</aside>
+<header><div class="haya-admin-brand"><img src="haya-logo.jpg" alt="Haya Community Care logo"><div><h1>Haya Community Care</h1><p>Local Registration & Admin Demo</p></div></div><nav><a href="index.html#admin" style="display:inline-flex;align-items:center;padding:12px 18px;color:#173c2b;font-weight:700">Community Updates Admin / 社区动态管理</a><a href="index.html" style="display:inline-flex;align-items:center;padding:12px 18px;color:#173c2b;font-weight:700">Home</a><button type="button" class="secondary" id="navRegister">Register</button><button type="button" class="secondary" id="navAdmin">Admin</button></nav></header>
+<main>
+<section id="registerView" class="two">
+<div class="intro"><h2>Join Our Community</h2><p>Welcome to Haya Community Care. This is a local learning demonstration. Try submitting a fictional registration and then view it in the admin dashboard.</p><p class="notice">For testing only. Do not enter real names, personal email addresses, medical information or other sensitive details.</p></div>
+<div class="card"><h2>Registration</h2><form id="registerForm"><label for="fullName">Full name (fictional)</label><input id="fullName" name="fullName" required maxlength="80" placeholder="Example Person"><label for="email">Email address (fictional)</label><input id="email" name="email" type="email" required maxlength="120" placeholder="example@example.com"><label for="interest">I am interested in</label><select id="interest" name="interest" required><option value="">Choose an option</option><option>Volunteering</option><option>Community Visit</option><option>Friendly Chat</option><option>Community Support</option><option>Information Session</option></select><button type="submit">Continue Registration →</button></form><div class="social-login" aria-label="Social sign-in options">
+<p class="social-heading">Or continue with</p><div class="social-buttons">
+<button type="button" class="social-btn" data-social="Google"><span class="google-g" aria-hidden="true">G</span> Google</button>
+</div><p class="social-status" role="status">Sign in with Google to fill in your name and email.</p></div><div id="registerMessage" role="status" aria-live="polite"></div></div>
+</section>
+<section id="adminLoginView" class="hidden"><div class="card" style="max-width:550px;margin:0 auto"><h2>Administrator Login</h2><p><a href="index.html#login">Administrator login for community updates / 社区动态管理员登录 →</a></p><p class="notice">Demo only: username and password are checked in browser JavaScript. This is NOT secure authentication. Do not use for real personal information or publish as a protected admin dashboard.</p><form id="loginForm"><label for="username">Username</label><input id="username" name="username" autocomplete="username" required><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required><button type="submit">Log In</button></form><p id="loginMessage" role="alert"></p></div></section>
+<section id="dashboardView" class="hidden"><div class="card"><div class="actions"><div><h2 style="margin-bottom:5px">Registration Dashboard</h2><p style="margin:0">Fictional records stored in this browser only.</p></div><button type="button" class="secondary" id="logout">Log Out</button></div><div class="stats"><div class="stat"><strong id="totalCount">0</strong>Total registrations</div><div class="stat"><strong id="pendingCount">0</strong>Pending requests</div></div><div class="actions"><input id="search" aria-label="Search records" placeholder="Search registrations..."><button type="button" id="exportCsv">Export CSV</button><button type="button" class="danger small" id="clearAll">Clear demo records</button></div><div class="table-scroll"><table><thead><tr><th>ID</th><th>Demo Name</th><th>Demo Email</th><th>Interest</th><th>Date</th><th>Status</th><th>Action</th></tr></thead><tbody id="recordRows"></tbody></table></div><p id="emptyMessage" style="display:none">No demo records yet. Use Register to add one.</p></div>
+<div class="card"><h2>Booking Requests</h2><p>Bookings submitted from the main website (fictional local test data only).</p>
+<div class="stats"><div class="stat"><strong id="bookingCount">0</strong>Total bookings</div><div class="stat"><strong id="bookingPending">0</strong>Pending bookings</div></div>
+<div class="actions"><input id="bookingSearch" aria-label="Search bookings" placeholder="Search bookings..."><button type="button" id="exportBookings">Export Bookings CSV</button><button type="button" class="danger small" id="clearBookings">Clear bookings</button></div>
+<div class="table-scroll"><table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Area</th><th>Service</th><th>Preferred Date</th><th>Note</th><th>Status</th><th>Action</th></tr></thead><tbody id="bookingRows"></tbody></table></div><p id="emptyBookings">No bookings yet. Submit a demo booking from the homepage.</p></div></section>
+</main>
+<footer>Haya Community Care · Offline learning demo · No real accounts or secure access control</footer>
+<script>
+(function(){
+'use strict';
+const KEY='haya_local_registration_demo_v1';
+ const BOOKING_KEY='haya_local_booking_demo_v1';
+const $=id=>document.getElementById(id);
+let loggedIn=false;
+function load(){try{const data=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(data)?data:[]}catch(e){return []}}
+function save(data){try{localStorage.setItem(KEY,JSON.stringify(data));return true}catch(e){alert('Browser storage is unavailable. Try a normal browser window or local server.');return false}}
+function show(view){['registerView','adminLoginView','dashboardView'].forEach(id=>$(id).classList.toggle('hidden',id!==view));if(view==='dashboardView'){render();renderBookings()}}
+$('navRegister').addEventListener('click',()=>show('registerView'));
+$('navAdmin').addEventListener('click',()=>show(loggedIn?'dashboardView':'adminLoginView'));
+$('registerForm').addEventListener('submit',e=>{e.preventDefault();const name=$('fullName').value.trim(),email=$('email').value.trim(),interest=$('interest').value;if(!name||!email||!interest)return;const data=load();data.push({id:'D'+Date.now().toString(36).toUpperCase(),name,email,interest,date:new Date().toLocaleDateString('en-CA'),status:'Pending'});if(save(data)){$('registerForm').reset();$('registerMessage').className='notice success';$('registerMessage').textContent='Demo registration saved in this browser. Click Admin to view it.'}});
+$('loginForm').addEventListener('submit',e=>{e.preventDefault();if($('username').value.trim()==='Mukangshi'&&$('password').value==='Smkhyy2011'){loggedIn=true;$('loginForm').reset();$('loginMessage').textContent='';show('dashboardView')}else{$('loginMessage').className='notice error';$('loginMessage').textContent='Incorrect username or password.'}});
+$('logout').addEventListener('click',()=>{loggedIn=false;show('adminLoginView')});
+function render(){if(!loggedIn)return;const all=load();$('totalCount').textContent=all.length;$('pendingCount').textContent=all.filter(r=>r.status==='Pending').length;const q=$('search').value.toLowerCase();const filtered=all.filter(r=>[r.id,r.name,r.email,r.interest,r.date,r.status].some(v=>String(v).toLowerCase().includes(q)));const tbody=$('recordRows');tbody.replaceChildren();$('emptyMessage').style.display=filtered.length?'none':'block';for(const item of filtered){const tr=document.createElement('tr');for(const value of [item.id,item.name,item.email,item.interest,item.date]){const td=document.createElement('td');td.textContent=value;tr.appendChild(td)}const statusTd=document.createElement('td'),sel=document.createElement('select');for(const status of ['Pending','Reviewed','Approved','Completed']){const opt=document.createElement('option');opt.value=status;opt.textContent=status;sel.appendChild(opt)}sel.value=item.status;sel.addEventListener('change',()=>{const data=load(),target=data.find(r=>r.id===item.id);if(target){target.status=sel.value;save(data);render()}});statusTd.appendChild(sel);tr.appendChild(statusTd);const actionTd=document.createElement('td'),del=document.createElement('button');del.type='button';del.className='danger small';del.textContent='Delete';del.addEventListener('click',()=>{if(confirm('Delete this fictional record?')){save(load().filter(r=>r.id!==item.id));render()}});actionTd.appendChild(del);tr.appendChild(actionTd);tbody.appendChild(tr)}}
+$('search').addEventListener('input',render);
+$('clearAll').addEventListener('click',()=>{if(confirm('Delete ALL fictional demo records in this browser?')){save([]);render()}});
+$('exportCsv').addEventListener('click',()=>{if(!loggedIn)return;const rows=[['ID','Name','Email','Interest','Date','Status'],...load().map(r=>[r.id,r.name,r.email,r.interest,r.date,r.status])];const escapeCsv=value=>'"'+String(value).replace(/^[=+\-@\t\r]/,"'$&").replace(/"/g,'""')+'"';const csv='\uFEFF'+rows.map(r=>r.map(escapeCsv).join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='haya-demo-registrations.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+ function loadBookings(){try{const a=JSON.parse(localStorage.getItem(BOOKING_KEY)||'[]');return Array.isArray(a)?a:[]}catch(_){return []}}
+ function saveBookings(a){try{localStorage.setItem(BOOKING_KEY,JSON.stringify(a));return true}catch(_){alert('Unable to save demo bookings.');return false}}
+ function renderBookings(){if(!loggedIn)return;const all=loadBookings();$('bookingCount').textContent=all.length;$('bookingPending').textContent=all.filter(x=>x.status==='Pending').length;const q=$('bookingSearch').value.toLowerCase();const items=all.filter(x=>[x.id,x.name,x.email,x.area,x.service,x.date,x.note,x.status].some(v=>String(v||'').toLowerCase().includes(q)));const body=$('bookingRows');body.replaceChildren();$('emptyBookings').style.display=items.length?'none':'block';for(const item of items){const tr=document.createElement('tr');for(const field of ['id','name','email','area','service','date','note']){const td=document.createElement('td');td.textContent=item[field]||'';tr.appendChild(td)}const statusCell=document.createElement('td');const sel=document.createElement('select');for(const s of ['Pending','Reviewed','Approved','Completed','Cancelled']){const opt=document.createElement('option');opt.value=s;opt.textContent=s;sel.appendChild(opt)}sel.value=item.status||'Pending';sel.addEventListener('change',()=>{const arr=loadBookings();const row=arr.find(x=>x.id===item.id);if(row){row.status=sel.value;if(saveBookings(arr))renderBookings()}});statusCell.appendChild(sel);tr.appendChild(statusCell);const action=document.createElement('td');const del=document.createElement('button');del.type='button';del.className='danger small';del.textContent='Delete';del.addEventListener('click',()=>{if(confirm('Delete this demo booking?')&&saveBookings(loadBookings().filter(x=>x.id!==item.id)))renderBookings()});action.appendChild(del);tr.appendChild(action);body.appendChild(tr)}}
+ $('bookingSearch').addEventListener('input',renderBookings);
+ $('clearBookings').addEventListener('click',()=>{if(confirm('Delete all demo bookings?')&&saveBookings([]))renderBookings()});
+ $('exportBookings').addEventListener('click',()=>{if(!loggedIn)return;const columns=['id','name','email','area','service','date','note','status'];const rows=[columns,...loadBookings().map(x=>columns.map(c=>x[c]||''))];const esc=v=>'"'+String(v).replace(/^[=+\-@\t\r]/,"'$&").replace(/"/g,'""')+'"';const csv='\uFEFF'+rows.map(r=>r.map(esc).join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='haya-demo-bookings.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+show('registerView');
+})();
+</script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
+const firebaseConfig = {
+  apiKey: "AIzaSyDDkkY7u0_YTTfiZFpBH0ini9ZshqblazA",
+  authDomain: "haya-community-care.firebaseapp.com",
+  projectId: "haya-community-care",
+  storageBucket: "haya-community-care.firebasestorage.app",
+  messagingSenderId: "922556818737",
+  appId: "1:922556818737:web:54c605c1ed5ab8fc637c10",
+  measurementId: "G-LFYXGZS4ZN"
+};
+const auth = getAuth(initializeApp(firebaseConfig));
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({prompt:'select_account'});
+const buttons = [...document.querySelectorAll('[data-social="Google"]')];
+function status(message){ document.querySelectorAll('.social-status').forEach(el=>{el.textContent=message;}); }
+function update(user){
+  buttons.forEach(b=>{b.textContent=user?'Google: '+(user.displayName||user.email||'Signed in'):'Continue with Google';});
+  let signOutButton=document.getElementById('googleSignOut');
+  if(user && !signOutButton){signOutButton=document.createElement('button');signOutButton.id='googleSignOut';signOutButton.type='button';signOutButton.className='social-btn';signOutButton.textContent='Sign out of Google';signOutButton.style.marginTop='10px';const holder=document.querySelector('.social-login');if(holder)holder.appendChild(signOutButton);signOutButton.addEventListener('click',async()=>{try{await signOut(auth)}catch(e){status('Sign-out failed: '+e.message)}})}
+  if(signOutButton)signOutButton.hidden=!user;
+  if(user){
+    const fields=[['regName',user.displayName],['regEmail',user.email],['bookName',user.displayName],['bookEmail',user.email],['fullName',user.displayName],['email',user.email]];
+    fields.forEach(([id,value])=>{const el=document.getElementById(id);if(el&&value&&!el.value)el.value=value;});
+    status('Signed in with Google as '+(user.email||user.displayName)+'. Please complete and submit the form separately.');
+  } else status('Sign in with Google to fill in your name and email.');
+}
+onAuthStateChanged(auth,update);
+getRedirectResult(auth).catch(err=>status('Google sign-in error: '+err.message));
+buttons.forEach(button=>button.addEventListener('click',async()=>{
+  if(auth.currentUser){status('Already signed in. Complete the form, or sign out to switch accounts.');return;}
+  status('Opening Google sign-in...');
+  try{await signInWithPopup(auth,provider)}catch(err){
+    if(err.code==='auth/popup-blocked'||err.code==='auth/operation-not-supported-in-this-environment'){
+      status('Redirecting to Google sign-in...');
+      try{await signInWithRedirect(auth,provider)}catch(e){status('Google sign-in error: '+e.message)}
+    }else if(err.code==='auth/popup-closed-by-user'||err.code==='auth/cancelled-popup-request'){
+      status('Google sign-in cancelled.');
+    }else{status('Google sign-in error ('+(err.code||'unknown')+'): '+err.message)}
+  }
+}));
+</script>
+</body></html>
